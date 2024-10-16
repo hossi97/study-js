@@ -26,7 +26,6 @@ async function fetchProductsAPI() {
 
 export function createProductElement({
   product,
-  count = 0,
 }: CreateProductElementProps): HTMLDivElement {
   const productElement = document.createElement("div");
   productElement.classList.add("product");
@@ -69,7 +68,8 @@ export function createProductElement({
   productDecreaseBtn.textContent = "-";
   const productCount = document.createElement("span");
   productCount.classList.add("cart-count", "text-green-800");
-  productCount.textContent = `${count === 0 ? 0 : count}`;
+  productCount.setAttribute("data-subscribe-to", "countMap");
+  productCount.setAttribute("data-subscription-path", `${product.id}`);
   const productIncreaseBtn = document.createElement("button");
   productIncreaseBtn.classList.add(
     "btn-increase",

@@ -69,7 +69,6 @@ export type ProductMap = {
 
 export type CreateProductElementProps = {
   product: Product;
-  count?: number;
 };
 
 export type SetupProductsProps = {

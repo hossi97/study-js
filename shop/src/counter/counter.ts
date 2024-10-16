@@ -1,35 +1,46 @@
-import { CountMap, Increase, Decrease } from "./counter.d";
+import { bindReactiveState } from "../reactivity/reactivity";
+import { CountMap, Increase, Decrease, GetCountByProductId } from "./counter.d";
 
 export function setupCounter() {
-  const countMap: CountMap = {};
+	const [getCountMap, setCountMap] = bindReactiveState({
+		name: "countMap",
+		defaultValue: {},
+	});
 
-  const increase: Increase = ({ productId }) => {
-    if (countMap[productId]) {
-      countMap[productId] = 0;
-    }
-    countMap[productId] += 1;
-    return countMap[productId];
-  };
+	const increase: Increase = ({ productId }) => {
+		const newCountMap: CountMap = { ...getCountMap() };
+		if (newCountMap[productId]) {
+			newCountMap[productId] = 0;
+		}
+		newCountMap[productId] += 1;
+		setCountMap(newCountMap);
+	};
 
-  const decrease: Decrease = ({ productId }) => {
-    if (countMap[productId]) {
-      countMap[productId] = 0;
-    }
-    countMap[productId] -= 1;
-    return countMap[productId];
-  };
+	const decrease: Decrease = ({ productId }) => {
+		const newCountMap: CountMap = { ...getCountMap() };
+		if (newCountMap[productId]) {
+			newCountMap[productId] = 0;
+		}
+		newCountMap[productId] -= 1;
+		setCountMap(newCountMap);
+	};
 
-  const getTotalCount = () => {
-    let count = 0;
-    Object.values(countMap).forEach((number) => {
-      count += number;
-    });
-    return count;
-  };
+	const getTotalCount = () => {
+		let totalCount = 0;
+		Object.values(getCountMap()).forEach((count) => {
+			totalCount += count;
+		});
+		return totalCount;
+	};
 
-  return {
-    increase,
-    decrease,
-    getTotalCount,
-  };
+	const getCountByProductId: GetCountByProductId = ({ productId }) => {
+		return getCountMap()[productId] || 0;
+	};
+
+	return {
+		increase,
+		decrease,
+		getTotalCount,
+		getCountByProductId,
+	};
 }
